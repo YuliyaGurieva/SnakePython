@@ -1,8 +1,8 @@
 import pygame
 import sys
 import random
-
 pygame.init()
+
 space_color = (0, 50, 0)
 header_color = (0, 100, 50)
 snake_color = (0, 100, 0)
@@ -13,9 +13,12 @@ size = (size_block * count_blocks + size_block * 2, (size_block * count_blocks +
 wheat = (245, 222, 179)
 black = (205, 133, 63)
 red = (255, 0, 0)
+green = (0, 255, 0)
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption('Snake Python')
 timer = pygame.time.Clock()
+font_total = pygame.font.SysFont('courier', 20, bold='Hashable')
+font_speed = pygame.font.SysFont('courier', 20, bold='Hashable')
 
 class SnakeWay:
     def __init__(self, x, y):
@@ -40,6 +43,8 @@ snake_ways = [SnakeWay(9, 8), SnakeWay(9, 9), SnakeWay(9, 10)]
 food = new_food_coords()
 dif_row = 0
 dif_col = 1
+total = 0
+speed = 1
 
 while True:
 
@@ -63,6 +68,10 @@ while True:
                 dif_col = 1
     screen.fill(space_color)
     pygame.draw.rect(screen, header_color, (0, 0, size[0], header_field))
+    text_total = font_total.render(f'Your progress: {total}', False, green)
+    text_speed = font_total.render(f'Speed: {speed}', False, green)
+    screen.blit(text_total, (size_block, size_block))
+    screen.blit(text_speed, (size_block + 250, size_block))
     for row in range(count_blocks):
         for column in range(count_blocks):
             if (row + column) % 2 == 0:
@@ -80,6 +89,9 @@ while True:
         draw_block(snake_color, block.x, block.y)
 
     if food == head:
+        total += 1
+        speed += total // 5 + 1
+        snake_ways.append(food)
         food = new_food_coords()
 
     new_head = SnakeWay(head.x + dif_row, head.y + dif_col)
@@ -87,5 +99,5 @@ while True:
     snake_ways.pop(0)
 
     pygame.display.flip()
-    timer.tick(3)
+    timer.tick(3 + speed)
 
