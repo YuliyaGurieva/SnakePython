@@ -41,10 +41,10 @@ def draw_block(color, row, column):
                                      header_field + size_block + row * size_block, size_block, size_block])
 snake_ways = [SnakeWay(9, 8), SnakeWay(9, 9), SnakeWay(9, 10)]
 food = new_food_coords()
-dif_row = 0
-dif_col = 1
+dif_row = key_row = 0
+dif_col = key_col = 1
 total = 0
-speed = 1
+speed = 2
 
 while True:
 
@@ -55,17 +55,17 @@ while True:
             sys.exit()
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP and dif_col != 0:
-                dif_row = -1
-                dif_col = 0
+                key_row = -1
+                key_col = 0
             elif event.key == pygame.K_DOWN and dif_col != 0:
-                dif_row = 1
-                dif_col = 0
+                key_row = 1
+                key_col = 0
             elif event.key == pygame.K_LEFT and dif_row != 0:
-                dif_row = 0
-                dif_col = -1
+                key_row = 0
+                key_col = -1
             if event.key == pygame.K_RIGHT and dif_row != 0:
-                dif_row = 0
-                dif_col = 1
+                key_row = 0
+                key_col = 1
     screen.fill(space_color)
     pygame.draw.rect(screen, header_color, (0, 0, size[0], header_field))
     text_total = font_total.render(f'Your progress: {total}', False, green)
@@ -87,17 +87,24 @@ while True:
     draw_block(red, food.x, food.y)
     for block in snake_ways:
         draw_block(snake_color, block.x, block.y)
-
+    pygame.display.flip()
     if food == head:
         total += 1
-        speed += total // 5 + 1
+        if total % 5 == 0:
+            speed += 1
         snake_ways.append(food)
         food = new_food_coords()
-
+    dif_row = key_row
+    dif_col = key_col
     new_head = SnakeWay(head.x + dif_row, head.y + dif_col)
+
+    if new_head in snake_ways:
+        print('GAME OVER!', 'You crashed yourself!', sep='\n')
+        pygame.quit()
+        sys.exit()
     snake_ways.append(new_head)
     snake_ways.pop(0)
 
-    pygame.display.flip()
-    timer.tick(3 + speed)
+
+    timer.tick(speed)
 
