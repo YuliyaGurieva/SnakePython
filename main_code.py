@@ -11,8 +11,8 @@ count_blocks = 19
 header_field = 70
 size = (size_block * count_blocks + size_block * 2, (size_block * count_blocks + size_block * 2) + header_field)
 wheat = (245, 222, 179)
-black = (0, 0, 0)
-yellow = (255, 255, 0)
+black = (205, 133, 63)
+red = (255, 0, 0)
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption('Snake Python')
 timer = pygame.time.Clock()
@@ -75,7 +75,7 @@ while True:
         print('GAME OVER!', 'You are failed!', sep='\n')
         pygame.quit()
         sys.exit()
-    draw_block(yellow, food.x, food.y)
+    draw_block(red, food.x, food.y)
     for block in snake_ways:
         draw_block(snake_color, block.x, block.y)
 
