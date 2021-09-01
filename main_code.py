@@ -110,12 +110,27 @@ def start_the_game():
         timer.tick(speed)
 
 
-
-menu = pygame_menu.Menu('Welcome', 400, 300,
-                       theme=pygame_menu.themes.THEME_BLUE)
+main_theme = pygame_menu.themes.THEME_DARK.copy()
+main_theme.set_background_color_opacity(0.6)
+menu = pygame_menu.Menu('', 300, 220,
+                       theme=main_theme)
 
 menu.add.text_input('Name: ', default='Guest')
 menu.add.button('Play', start_the_game)
 menu.add.button('Quit', pygame_menu.events.EXIT)
-menu.mainloop(screen)
+
+while True:
+
+    screen.blit(bg_image, (0, 0))
+
+    events = pygame.event.get()
+    for event in events:
+        if event.type == pygame.QUIT:
+            exit()
+
+    if menu.is_enabled():
+        menu.update(events)
+        menu.draw(screen)
+
+    pygame.display.update()
 
