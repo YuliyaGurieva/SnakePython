@@ -1,5 +1,6 @@
 import pygame
 import sys
+import random
 
 pygame.init()
 space_color = (0, 50, 0)
@@ -9,9 +10,9 @@ size_block = 20
 count_blocks = 19
 header_field = 70
 size = (size_block * count_blocks + size_block * 2, (size_block * count_blocks + size_block * 2) + header_field)
-white = (255, 255, 255)
 wheat = (245, 222, 179)
 black = (0, 0, 0)
+yellow = (255, 255, 0)
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption('Snake Python')
 timer = pygame.time.Clock()
@@ -22,12 +23,21 @@ class SnakeWay:
         self.y = y
     def is_inside(self):
         return 0 <= self.x < count_blocks and 0 <= self.y < count_blocks
-
+    def __eq__(self, other):
+        return isinstance(other, SnakeWay) and self.x == other.x and self.y == other.y
+def new_food_coords():
+    x = random.randint(0, count_blocks - 1)
+    y = random.randint(0, count_blocks - 1)
+    new_food = SnakeWay(x, y)
+    while new_food in snake_ways:
+        new_food.x = random.randint(0, count_blocks - 1)
+        new_food.y = random.randint(0, count_blocks - 1)
+    return new_food
 def draw_block(color, row, column):
     pygame.draw.rect(screen, color, [size_block + column * size_block,
                                      header_field + size_block + row * size_block, size_block, size_block])
 snake_ways = [SnakeWay(9, 8), SnakeWay(9, 9), SnakeWay(9, 10)]
-
+food = new_food_coords()
 dif_row = 0
 dif_col = 1
 
@@ -65,13 +75,17 @@ while True:
         print('GAME OVER!', 'You are failed!', sep='\n')
         pygame.quit()
         sys.exit()
+    draw_block(yellow, food.x, food.y)
     for block in snake_ways:
         draw_block(snake_color, block.x, block.y)
+
+    if food == head:
+        food = new_food_coords()
 
     new_head = SnakeWay(head.x + dif_row, head.y + dif_col)
     snake_ways.append(new_head)
     snake_ways.pop(0)
 
     pygame.display.flip()
-    timer.tick(2)
+    timer.tick(3)
 
