@@ -1,4 +1,6 @@
 import pygame
+import sys
+
 pygame.init()
 space_color = (0, 50, 0)
 header_color = (0, 100, 50)
@@ -13,16 +15,18 @@ black = (0, 0, 0)
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption('Snake Python')
 timer = pygame.time.Clock()
-print(size)
+
 class SnakeWay:
     def __init__(self, x, y):
         self.x = x
         self.y = y
+    def is_inside(self):
+        return 0 <= self.x < count_blocks and 0 <= self.y < count_blocks
 
 def draw_block(color, row, column):
     pygame.draw.rect(screen, color, [size_block + column * size_block,
                                      header_field + size_block + row * size_block, size_block, size_block])
-snake_way = [SnakeWay(9, 9)]
+snake_ways = [SnakeWay(9, 8), SnakeWay(9, 9), SnakeWay(9, 10)]
 
 dif_row = 0
 dif_col = 1
@@ -33,6 +37,7 @@ while True:
         if event.type == pygame.QUIT:
             print('exit')
             pygame.quit()
+            sys.exit()
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP and dif_col != 0:
                 dif_row = -1
@@ -55,10 +60,18 @@ while True:
             else:
                 color = black
             draw_block(color, row, column)
-    for block in snake_way:
+    head = snake_ways[-1]
+    if not head.is_inside():
+        print('GAME OVER!', 'You are failed!', sep='\n')
+        pygame.quit()
+        sys.exit()
+    for block in snake_ways:
         draw_block(snake_color, block.x, block.y)
-        block.x += dif_row
-        block.y += dif_col
+
+    new_head = SnakeWay(head.x + dif_row, head.y + dif_col)
+    snake_ways.append(new_head)
+    snake_ways.pop(0)
+
     pygame.display.flip()
     timer.tick(2)
 
