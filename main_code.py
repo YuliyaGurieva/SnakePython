@@ -2,6 +2,7 @@ import pygame
 import sys
 import random
 import pygame_menu
+
 pygame.init()
 bg_image = pygame.image.load('snake.jpg')
 space_color = (0, 50, 0)
@@ -23,17 +24,24 @@ font_speed = pygame.font.SysFont('courier', 20, bold='Hashable')
 
 
 class SnakeWay:
-    def __init__(self, x, y):
+    """ The class is using for creating snake's parts and food. It's also responsible for verification of crossings."""
+
+    def __init__(self, x, y):  # Coordinates
         self.x = x
         self.y = y
-    def is_inside(self):
+
+    def is_inside(self):  # Control of borders
         return 0 <= self.x < count_blocks and 0 <= self.y < count_blocks
-    def __eq__(self, other):
+
+    def __eq__(self, other):  # Control of crossing snake's head with food
         return isinstance(other, SnakeWay) and self.x == other.x and self.y == other.y
+
 
 def draw_block(color, row, column):
     pygame.draw.rect(screen, color, [size_block + column * size_block,
                                      header_field + size_block + row * size_block, size_block, size_block])
+
+
 def start_the_game():
     def new_food_coords():
         x = random.randint(0, count_blocks - 1)
@@ -43,6 +51,7 @@ def start_the_game():
             new_food.x = random.randint(0, count_blocks - 1)
             new_food.y = random.randint(0, count_blocks - 1)
         return new_food
+
     snake_ways = [SnakeWay(9, 8), SnakeWay(9, 9), SnakeWay(9, 10)]
     food = new_food_coords()
     dif_row = key_row = 0
@@ -105,7 +114,7 @@ def start_the_game():
         if new_head in snake_ways:
             bg_image = pygame.image.load('snake.jpg')
             break
-        if total == 7:
+        if total == 20:
             bg_image = pygame.image.load('balls.png')
             break
         snake_ways.append(new_head)
@@ -117,7 +126,7 @@ def start_the_game():
 main_theme = pygame_menu.themes.THEME_DARK.copy()
 main_theme.set_background_color_opacity(0.6)
 menu = pygame_menu.Menu('', 300, 220,
-                       theme=main_theme)
+                        theme=main_theme)
 
 menu.add.text_input('Name: ', default='Guest')
 menu.add.button('Play', start_the_game)
@@ -137,4 +146,3 @@ while True:
         menu.draw(screen)
 
     pygame.display.update()
-
