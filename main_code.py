@@ -21,6 +21,7 @@ timer = pygame.time.Clock()
 font_total = pygame.font.SysFont('courier', 20, bold='Hashable')
 font_speed = pygame.font.SysFont('courier', 20, bold='Hashable')
 
+
 class SnakeWay:
     def __init__(self, x, y):
         self.x = x
@@ -83,8 +84,9 @@ def start_the_game():
                     color = black
                 draw_block(color, row, column)
         head = snake_ways[-1]
+        global bg_image
         if not head.is_inside():
-            print('GAME OVER!', 'You are failed!', sep='\n')
+            bg_image = pygame.image.load('snake.jpg')
             break
         draw_block(red, food.x, food.y)
         for block in snake_ways:
@@ -101,11 +103,13 @@ def start_the_game():
         new_head = SnakeWay(head.x + dif_row, head.y + dif_col)
 
         if new_head in snake_ways:
-            print('GAME OVER!', 'You crashed yourself!', sep='\n')
+            bg_image = pygame.image.load('snake.jpg')
+            break
+        if total == 7:
+            bg_image = pygame.image.load('balls.png')
             break
         snake_ways.append(new_head)
         snake_ways.pop(0)
-
 
         timer.tick(speed)
 
